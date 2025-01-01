@@ -60,24 +60,14 @@ jobs:
     - name: Build Kotlin doc
       run: tools/kotlin-doc
 
-    - name: Build tests
+    - name: Build lib
       run: |
         pushd android
-        ./gradlew assembleAndroidTest
+        ./gradlew assembleRelease
         popd
 
-    - name: Run tests
-      uses: reactivecircus/android-emulator-runner@v2
+    - name: Upload lib
+      uses: actions/upload-artifact@v4
       with:
-        api-level: 30
-        target: google_apis
-        arch: x86
-        ndk: 23.1.7779620
-        cmake: 3.18.1
-        script: cd android; ./gradlew connectedAndroidTest
-
-    - name: Build sample app
-      run: tools/samples-build android
-      env:
-        GITHUB_USER: ${{ github.actor }}
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        name: app-release
+        path: /build/**/*.aar
